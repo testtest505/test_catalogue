@@ -29,7 +29,7 @@
     <div id="table-container">Loading data...</div>
 
     <script>
-        fetch('catalogue.csv')
+        fetch('https://github.com/testtest505/test_catalogue/blob/main/catalogue.csv')
             .then(response => response.text())
             .then(csv => {
                 const data = Papa.parse(csv, { header: true });

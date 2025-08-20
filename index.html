@@ -1,67 +1,72 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Test Catalogue</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
         table {
             border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
+            width: 80%;
+            margin: 20px auto;
         }
         th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
+            border: 1px solid #444;
+            padding: 8px 12px;
             text-align: left;
         }
         th {
-            background-color: #f4f4f4;
+            background-color: #f2f2f2;
+        }
+        caption {
+            caption-side: top;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Test catalogue</h1>
+    <h1>Test Catalogue</h1>
     <div id="table-container">Loading data...</div>
 
     <script>
-        fetch('https://github.com/testtest505/test_catalogue/blob/main/catalogue.csv')
-            .then(response => response.text())
-            .then(csv => {
-                const data = Papa.parse(csv, { header: true });
-                const table = document.createElement('table');
-                const thead = document.createElement('thead');
-                const tbody = document.createElement('tbody');
+        async function loadCSV() {
+            const response = await fetch('catalogue.csv');
+            const text = await response.text();
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split(',');
 
-                // Header row
-                const headerRow = document.createElement('tr');
-                data.meta.fields.forEach(field => {
-                    const th = document.createElement('th');
-                    th.textContent = field;
-                    headerRow.appendChild(th);
-                });
-                thead.appendChild(headerRow);
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
 
-                // Data rows
-                data.data.forEach(row => {
-                    const tr = document.createElement('tr');
-                    data.meta.fields.forEach(field => {
-                        const td = document.createElement('td');
-                        td.textContent = row[field];
-                        tr.appendChild(td);
-                    });
-                    tbody.appendChild(tr);
-                });
-
-                table.appendChild(thead);
-                table.appendChild(tbody);
-                document.getElementById('table-container').innerHTML = '';
-                document.getElementById('table-container').appendChild(table);
+            const headerRow = document.createElement('tr');
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header.trim();
+                headerRow.appendChild(th);
             });
+            thead.appendChild(headerRow);
+
+            for (let i = 1; i < lines.length; i++) {
+                const row = document.createElement('tr');
+                const cells = lines[i].split(',');
+                cells.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell.trim();
+                    row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            }
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+
+            const container = document.getElementById('table-container');
+            container.innerHTML = '';
+            container.appendChild(table);
+        }
+
+        loadCSV();
     </script>
 </body>
 </html>

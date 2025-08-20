@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>People Catalogue</title>
+    https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>People Catalogue</h1>
+    <div id="table-container">Loading data...</div>
+
+    <script>
+        fetch('catalogue.csv')
+            .then(response => response.text())
+            .then(csv => {
+                const data = Papa.parse(csv, { header: true });
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const tbody = document.createElement('tbody');
+
+                // Header row
+                const headerRow = document.createElement('tr');
+                data.meta.fields.forEach(field => {
+                    const th = document.createElement('th');
+                    th.textContent = field;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+
+                // Data rows
+                data.data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    data.meta.fields.forEach(field => {
+                        const td = document.createElement('td');
+                        td.textContent = row[field];
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                document.getElementById('table-container').innerHTML = '';
+                document.getElementById('table-container').appendChild(table);
+            });
+    </script>
+</body>
+</html>
